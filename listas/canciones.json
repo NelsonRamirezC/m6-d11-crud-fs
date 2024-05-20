@@ -1,0 +1,32 @@
+{
+    "lista": [
+        {
+            "id": "afba13",
+            "nombre": "Canción 1"
+        },
+        {
+            "id": "afba16",
+            "nombre": "Canción 2"
+        },
+        {
+            "id": "1ab604",
+            "nombre": "Canción 3"
+        },
+        {
+            "id": "9a0e6d",
+            "nombre": "Canción 4"
+        },
+        {
+            "id": "f3fa00",
+            "nombre": "Canción 5"
+        },
+        {
+            "id": "a56b26",
+            "nombre": "Canción 6"
+        },
+        {
+            "id": "69b433",
+            "nombre": "Canción 7"
+        }
+    ]
+}

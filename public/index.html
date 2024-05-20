@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+
+<body>
+    <header>
+        <h1>Página principal</h1>
+    </header>
+
+
+    <section>
+
+        <h2>Lista de canciones: EJEMPLO (GET)</h2>
+        <ul id="listaCanciones">
+
+        </ul>
+        <hr>
+    </section>
+
+    <section>
+        <h2>Agregar nuevas canciones</h2>
+        <form id="formAddCancion">
+            <div>
+                <label for="cancion">Nombre canción</label>
+                <input type="text" name="cancion" id="cancion" required>
+                <input type="submit" value="Agregar a la lista">
+            </div>
+        </form>
+        <hr>
+    </section>
+
+    <script>
+
+        const actualizarLista = (lista) => {
+            let listaCanciones = document.getElementById("listaCanciones");
+
+            let liCanciones = "";
+            lista.forEach(cancion => {
+                liCanciones += `<li>ID: ${cancion.id} - Nombre: ${cancion.nombre}</li>`
+            });
+
+            listaCanciones.innerHTML = liCanciones;
+
+        }
+
+        const getCanciones = async () => {
+            try {
+                let response = await fetch("/canciones"); // por defecto hace un GET
+                let data = await response.json();
+
+                if (data.code == 200) {
+                    console.log("Todo ok");
+                    actualizarLista(data.lista);
+                } else {
+                    throw new Error(data.message)
+                }
+            } catch (error) {
+                alert("Ha sucedido un error al leer la lista de canciones.");
+                console.log(error);
+            }
+
+        }
+        getCanciones();
+
+        //INICIO CÓDIGO AGREGAR NUEVAS CANCIONES
+        let formAddCancion = document.getElementById("formAddCancion");
+
+        formAddCancion.addEventListener("submit", async (event) => {
+            try {
+                event.preventDefault();
+
+                const myHeaders = new Headers();
+                myHeaders.append("Content-Type", "application/json");
+
+                const raw = JSON.stringify({
+                    "nombre": cancion.value
+                });
+
+                const requestOptions = {
+                    method: "POST",
+                    headers: myHeaders,
+                    body: raw,
+                    redirect: "follow"
+                };
+
+
+                let response = await fetch("/canciones", requestOptions);
+                let data = await response.json();
+
+                console.log(data);
+                if (data.code == 201) {
+                    actualizarLista(data.lista);
+
+                    formAddCancion.reset();
+                } else {
+                    throw new Error("Error al crear una nueva canción.")
+                }
+            } catch (error) {
+                alert("Ha ocurrido un error al crear la nueva canción.");
+                console.log(error);
+            }
+        });
+
+        //FIN CÓDIGO AGREGAR NUEVAS CANCIONES
+
+    </script>
+</body>
+
+</html>
