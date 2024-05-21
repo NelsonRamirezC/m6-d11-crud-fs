@@ -15,7 +15,7 @@
 
     <section>
 
-        <h2>Lista de canciones: EJEMPLO (GET)</h2>
+        <h2>Lista de canciones: EJEMPLO (GET) y (DELETE)</h2>
         <ul id="listaCanciones">
 
         </ul>
@@ -41,7 +41,10 @@
 
             let liCanciones = "";
             lista.forEach(cancion => {
-                liCanciones += `<li>ID: ${cancion.id} - Nombre: ${cancion.nombre}</li>`
+                liCanciones += `
+                <li>ID: ${cancion.id} - Nombre: ${cancion.nombre} 
+                    <button onclick="eliminarCancion('${cancion.id}')">Eliminar</button>
+                </li>`
             });
 
             listaCanciones.innerHTML = liCanciones;
@@ -107,6 +110,33 @@
         });
 
         //FIN CÓDIGO AGREGAR NUEVAS CANCIONES
+
+        //INICIO FUNCIÓN ELIMINAR CANCIÓN
+
+        const eliminarCancion = async (idCancion) => {
+            try {
+
+                if(confirm("Está seguro que desea eliminar la canción con ID:" + idCancion)){
+                    
+                    let response = await fetch("/canciones?id="+idCancion, {
+                        method: "DELETE"
+                    });
+
+                    let data = await response.json();
+
+                    if(data.code == 200){
+                        console.log(data);
+                    }else {
+                        throw new Error("Error al intentar eliminar la canción con id: " + idCancion)
+                    }
+                }
+
+            } catch (error) {
+                alert("Ha ocurrido un error al intentar eliminar la cancion con id:" + idCancion);
+            }
+        }
+
+        //FIN FUNCIÓN ELIMINAR CANCIÓN
 
     </script>
 </body>

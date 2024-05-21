@@ -77,6 +77,20 @@ app.post("/canciones", async(req, res) => {
         });
     }
 
+
+    app.delete("/canciones", (req, res) => {
+        try {
+            res.json({
+                code: 200,
+                message: "Todo ok desde método delete"
+            })
+        } catch (error) {
+            res.status(500).json({
+                code: 500,
+                message: "Error al intentar eliminar la canción"
+            })
+        }
+    })
 });
 
 
