@@ -34,6 +34,25 @@
         <hr>
     </section>
 
+    <section>
+        <h2>Actualizar nombre canción</h2>
+        <form id="formUpdateCancion">
+            <div>
+                <div>
+                    <label for="selectCanciones">Lista de canciones:</label>
+                    <select id="selectCanciones" name="canciones" required>
+                </div>
+                <div>
+                    <label for="nuevoNombre">Nuevo Nombre:</label>
+                    <input type="text" id="nuevoNombre" name="nombre" required>
+                    <input type="submit" value="Camnbiar nombre">
+                </div>
+                </select>
+            </div>
+
+        </form>
+    </section>
+
     <script>
 
         const actualizarLista = (lista) => {
@@ -49,7 +68,20 @@
 
             listaCanciones.innerHTML = liCanciones;
 
-        }
+        };
+
+        const actualizarSelect = (lista) => {
+            let selectCanciones = document.getElementById("selectCanciones");
+
+            let options = "";
+            lista.forEach(cancion => {
+                options  += `
+                <option value="${cancion.id}">${cancion.nombre}</option>`
+            });
+
+            selectCanciones.innerHTML = options;
+
+        };
 
         const getCanciones = async () => {
             try {
@@ -59,6 +91,7 @@
                 if (data.code == 200) {
                     console.log("Todo ok");
                     actualizarLista(data.lista);
+                    actualizarSelect(data.lista);
                 } else {
                     throw new Error(data.message)
                 }
@@ -98,6 +131,7 @@
                 console.log(data);
                 if (data.code == 201) {
                     actualizarLista(data.lista);
+                    actualizarSelect(data.lista);
 
                     formAddCancion.reset();
                 } else {
@@ -125,7 +159,10 @@
                     let data = await response.json();
 
                     if(data.code == 200){
-                        console.log(data);
+                        alert("Se ha eliminado correctamente la canción cn id: " + idCancion);
+                        actualizarLista(data.lista);
+                        actualizarSelect(data.lista);
+                    
                     }else {
                         throw new Error("Error al intentar eliminar la canción con id: " + idCancion)
                     }
@@ -137,6 +174,58 @@
         }
 
         //FIN FUNCIÓN ELIMINAR CANCIÓN
+
+
+
+        // INICIO CÓDIGO PARA ACTUALIZAR UNA CANCIÓN
+
+        let formUpdateCancion = document.getElementById("formUpdateCancion");
+
+        formUpdateCancion.addEventListener("submit", async (event) => {
+            try {
+                event.preventDefault();
+
+                const myHeaders = new Headers();
+                myHeaders.append("Content-Type", "application/json");
+
+                let id = selectCanciones.value;
+                const raw = JSON.stringify({
+                    "id": id,
+                    "nombre": nuevoNombre.value
+                });
+
+                const requestOptions = {
+                    method: "PUT",
+                    headers: myHeaders,
+                    body: raw,
+                    redirect: "follow"
+                };
+
+
+                let response = await fetch("/canciones", requestOptions)
+
+                let data = await response.json();
+
+                if(data.code == 201){
+                    alert("Canción actualizada correctamente.");
+                    actualizarLista(data.lista);
+                    actualizarSelect(data.lista);
+
+                }else {
+                    throw new Error("Error al intentar actualizar la canción con id: " + id);
+                }
+
+
+            } catch (error) {
+                console.log(error);
+                alert("Error al intentar actualizar la canción seleccionada");
+            }
+
+
+        })
+
+
+        // FIN CÓDIGO PARA ACTUALIZAR UNA CANCIÓN
 
     </script>
 </body>
